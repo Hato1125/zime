@@ -58,17 +58,23 @@ pub const Renderer = struct {
         if (createInfo.backend != RenderBackend.auto) {
             switch (builtin.os.tag) {
                 .linux => {
-                    if (createInfo.backend == RenderBackend.opengl and createInfo.backend == RenderBackend.vulkan) {
+                    if (createInfo.backend != RenderBackend.opengl and
+                        createInfo.backend != RenderBackend.vulkan) {
                         return RendererCreateError.InvalidBackend;
                     }
                 },
                 .macos => {
-                    if (createInfo.backend == RenderBackend.direct3d11 and createInfo.backend == RenderBackend.direct3d12) {
+                    if (createInfo.backend != RenderBackend.metal and
+                        createInfo.backend != RenderBackend.opengl and
+                        createInfo.backend != RenderBackend.vulkan) {
                         return RendererCreateError.InvalidBackend;
                     }
                 },
                 .windows => {
-                    if (createInfo.backend == RenderBackend.metal and createInfo.backend == RenderBackend.vulkan) {
+                    if (createInfo.backend != RenderBackend.direct3d12 and
+                        createInfo.backend != RenderBackend.direct3d11 and
+                        createInfo.backend != RenderBackend.opengl and
+                        createInfo.backend != RenderBackend.vulkan) {
                         return RendererCreateError.InvalidBackend;
                     }
                 },
