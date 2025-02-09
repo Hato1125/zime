@@ -11,3 +11,10 @@ pub const Image = @import("core/image.zig").Image;
 pub const WindowCreateError = @import("core/window.zig").WindowCreateError;
 pub const WindowCreateInfo = @import("core/window.zig").WindowCreateInfo;
 pub const Window = @import("core/window.zig").Window;
+
+pub const BlendMode = @import("core/renderer.zig").BlendMode;
+pub const ScaleMode = @import("core/renderer.zig").ScaleMode;
+pub const RenderBackend = @import("core/renderer.zig").RenderBackend;
+pub const RendererCreateError = @import("core/renderer.zig").RendererCreateError;
+pub const RendererCreateInfo = @import("core/renderer.zig").RendererCreateInfo;
+pub const Renderer = @import("core/renderer.zig").Renderer;
