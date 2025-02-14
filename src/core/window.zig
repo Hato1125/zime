@@ -7,13 +7,13 @@ const c = @cImport({
     @cInclude("SDL3/SDL_video.h");
 });
 
-pub const WindowCreateError = error {
+pub const WindowCreateError = error{
     PropertiesCreateFailed,
     WindowCreateFailed,
 };
 
 pub const WindowCreateInfo = struct {
-    title: [] const u8,
+    title: []const u8,
     x: i32,
     y: i32,
     width: i32,
@@ -23,7 +23,7 @@ pub const WindowCreateInfo = struct {
 pub const Window = struct {
     ptr: ?*c.SDL_Window,
 
-    pub fn create(createInfo: WindowCreateInfo) WindowCreateError!Window {
+    pub fn create(info: WindowCreateInfo) WindowCreateError!Window {
         const props = c.SDL_CreateProperties();
         if (props == 0) {
             return WindowCreateError.PropertiesCreateFailed;
@@ -31,17 +31,17 @@ pub const Window = struct {
 
         defer c.SDL_DestroyProperties(props);
 
-        _ = c.SDL_SetStringProperty(props, c.SDL_PROP_WINDOW_CREATE_TITLE_STRING, &createInfo.title[0]);
-        _ = c.SDL_SetNumberProperty(props, c.SDL_PROP_WINDOW_CREATE_X_NUMBER, createInfo.x);
-        _ = c.SDL_SetNumberProperty(props, c.SDL_PROP_WINDOW_CREATE_Y_NUMBER, createInfo.y);
+        _ = c.SDL_SetStringProperty(props, c.SDL_PROP_WINDOW_CREATE_TITLE_STRING, &info.title[0]);
+        _ = c.SDL_SetNumberProperty(props, c.SDL_PROP_WINDOW_CREATE_X_NUMBER, info.x);
+        _ = c.SDL_SetNumberProperty(props, c.SDL_PROP_WINDOW_CREATE_Y_NUMBER, info.y);
 
         // If a value less than or equal to 0 is specified for the size, an error will occur during creation,
         // so it must be a value greater than or equal to 1.
-        _ = c.SDL_SetNumberProperty(props, c.SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, std.math.clamp(createInfo.width, 1, std.math.maxInt(i32)));
-        _ = c.SDL_SetNumberProperty(props, c.SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, std.math.clamp(createInfo.height, 1, std.math.maxInt(i32)));
+        _ = c.SDL_SetNumberProperty(props, c.SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, std.math.clamp(info.width, 1, std.math.maxInt(i32)));
+        _ = c.SDL_SetNumberProperty(props, c.SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, std.math.clamp(info.height, 1, std.math.maxInt(i32)));
 
         const window = c.SDL_CreateWindowWithProperties(props);
-        if (window) |ptr|  {
+        if (window) |ptr| {
             return .{ .ptr = ptr };
         }
 
@@ -175,7 +175,7 @@ pub const Window = struct {
             _ = c.SDL_SetWindowSize(
                 ptr,
                 std.math.clamp(width, 1, std.math.maxInt(i32)),
-                std.math.clamp(height, 1, std.math.maxInt(i32))
+                std.math.clamp(height, 1, std.math.maxInt(i32)),
             );
         }
     }
@@ -196,7 +196,7 @@ pub const Window = struct {
             _ = c.SDL_SetWindowMaximumSize(
                 ptr,
                 std.math.clamp(width, 1, std.math.maxInt(i32)),
-                std.math.clamp(height, 1, std.math.maxInt(i32))
+                std.math.clamp(height, 1, std.math.maxInt(i32)),
             );
         }
     }
@@ -217,7 +217,7 @@ pub const Window = struct {
             _ = c.SDL_SetWindowMinimumSize(
                 ptr,
                 std.math.clamp(width, 1, std.math.maxInt(i32)),
-                std.math.clamp(height, 1, std.math.maxInt(i32))
+                std.math.clamp(height, 1, std.math.maxInt(i32)),
             );
         }
     }

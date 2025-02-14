@@ -3,8 +3,8 @@ const std = @import("std");
 const zime = @import("../zime.zig");
 
 const c = @cImport({
-   @cInclude("SDL3/SDL_surface.h");
-   @cInclude("SDL3_image/SDL_image.h");
+    @cInclude("SDL3/SDL_surface.h");
+    @cInclude("SDL3_image/SDL_image.h");
 });
 
 pub const ImageLoadError = error{LoadFailed};

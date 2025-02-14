@@ -35,7 +35,7 @@ pub const RenderBackend = enum {
     direct3d12,
 };
 
-pub const RendererCreateError = error {
+pub const RendererCreateError = error{
     InvalidWindow,
     InvalidBackend,
     PropertiesCreateFailed,
@@ -50,37 +50,40 @@ pub const RendererCreateInfo = struct {
 pub const Renderer = struct {
     ptr: ?*c.SDL_Renderer,
 
-    pub fn create(createInfo: RendererCreateInfo) RendererCreateError!Renderer {
-        if (createInfo.window.ptr == null) {
+    pub fn create(info: RendererCreateInfo) RendererCreateError!Renderer {
+        if (info.window.ptr == null) {
             return RendererCreateError.InvalidWindow;
         }
 
-        if (createInfo.backend != RenderBackend.auto) {
+        if (info.backend != RenderBackend.auto) {
             switch (builtin.os.tag) {
                 .linux => {
-                    if (createInfo.backend != RenderBackend.opengl and
-                        createInfo.backend != RenderBackend.vulkan) {
+                    if (info.backend != RenderBackend.opengl and
+                        info.backend != RenderBackend.vulkan)
+                    {
                         return RendererCreateError.InvalidBackend;
                     }
                 },
                 .macos => {
-                    if (createInfo.backend != RenderBackend.metal and
-                        createInfo.backend != RenderBackend.opengl and
-                        createInfo.backend != RenderBackend.vulkan) {
+                    if (info.backend != RenderBackend.metal and
+                        info.backend != RenderBackend.opengl and
+                        info.backend != RenderBackend.vulkan)
+                    {
                         return RendererCreateError.InvalidBackend;
                     }
                 },
                 .windows => {
-                    if (createInfo.backend != RenderBackend.direct3d12 and
-                        createInfo.backend != RenderBackend.direct3d11 and
-                        createInfo.backend != RenderBackend.opengl and
-                        createInfo.backend != RenderBackend.vulkan) {
+                    if (info.backend != RenderBackend.direct3d12 and
+                        info.backend != RenderBackend.direct3d11 and
+                        info.backend != RenderBackend.opengl and
+                        info.backend != RenderBackend.vulkan)
+                    {
                         return RendererCreateError.InvalidBackend;
                     }
                 },
                 else => {
                     @compileError("Unsupported OS");
-                }
+                },
             }
         }
 
@@ -91,11 +94,11 @@ pub const Renderer = struct {
 
         defer c.SDL_DestroyProperties(props);
 
-        if (createInfo.backend != RenderBackend.auto) {
-            _ = c.SDL_SetStringProperty(props, c.SDL_PROP_RENDERER_CREATE_NAME_STRING, @tagName(createInfo.backend));
+        if (info.backend != RenderBackend.auto) {
+            _ = c.SDL_SetStringProperty(props, c.SDL_PROP_RENDERER_CREATE_NAME_STRING, @tagName(info.backend));
         }
 
-        _ = c.SDL_SetPointerProperty(props, c.SDL_PROP_RENDERER_CREATE_WINDOW_POINTER, createInfo.window.ptr);
+        _ = c.SDL_SetPointerProperty(props, c.SDL_PROP_RENDERER_CREATE_WINDOW_POINTER, info.window.ptr);
 
         const renderer = c.SDL_CreateRendererWithProperties(props);
         if (renderer) |ptr| {
@@ -185,7 +188,7 @@ pub const Renderer = struct {
 
     pub fn setViewport(self: Renderer, rect: zime.Rect(i32)) void {
         if (self.ptr) |ptr| {
-            _ = c.SDL_SetRenderViewport(ptr, &c.SDL_Rect {
+            _ = c.SDL_SetRenderViewport(ptr, &c.SDL_Rect{
                 .x = rect.x,
                 .y = rect.y,
                 .w = rect.width,
@@ -203,20 +206,20 @@ pub const Renderer = struct {
                 .x = rect.x,
                 .y = rect.y,
                 .width = rect.w,
-                .height = rect.h
+                .height = rect.h,
             };
         }
         return .{
             .x = 0,
             .y = 0,
             .width = 0,
-            .height = 0
+            .height = 0,
         };
     }
 
     pub fn setClipRect(self: Renderer, rect: zime.Rect(i32)) void {
         if (self.ptr) |ptr| {
-            _ = c.SDL_SetRenderClipRect(ptr, &c.SDL_Rect {
+            _ = c.SDL_SetRenderClipRect(ptr, &c.SDL_Rect{
                 .x = rect.x,
                 .y = rect.y,
                 .w = rect.width,
@@ -234,14 +237,14 @@ pub const Renderer = struct {
                 .x = rect.x,
                 .y = rect.y,
                 .width = rect.w,
-                .height = rect.h
+                .height = rect.h,
             };
         }
         return .{
             .x = 0,
             .y = 0,
             .width = 0,
-            .height = 0
+            .height = 0,
         };
     }
 

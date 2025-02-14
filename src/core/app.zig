@@ -42,7 +42,7 @@ pub const App = struct {
         limit: bool,
     },
 
-    pub fn init(createInfo: AppCreateInfo) (AppInitError || zime.WindowCreateError || zime.RendererCreateError)!App {
+    pub fn init(info: AppCreateInfo) (AppInitError || zime.WindowCreateError || zime.RendererCreateError)!App {
         c.SDL_SetMainReady();
 
         const Subsystem = struct {
@@ -67,17 +67,17 @@ pub const App = struct {
         }
 
         var window = try zime.Window.create(.{
-            .title = createInfo.window.title,
-            .x = createInfo.window.x,
-            .y = createInfo.window.y,
-            .width = createInfo.window.width,
-            .height = createInfo.window.height,
+            .title = info.window.title,
+            .x = info.window.x,
+            .y = info.window.y,
+            .width = info.window.width,
+            .height = info.window.height,
         });
         errdefer window.destroy();
 
         var renderer = try zime.Renderer.create(.{
             .window = window,
-            .backend = createInfo.renderer.backend,
+            .backend = info.renderer.backend,
         });
         errdefer renderer.destroy();
 
