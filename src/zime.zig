@@ -18,3 +18,7 @@ pub const RenderBackend = @import("core/renderer.zig").RenderBackend;
 pub const RendererCreateError = @import("core/renderer.zig").RendererCreateError;
 pub const RendererCreateInfo = @import("core/renderer.zig").RendererCreateInfo;
 pub const Renderer = @import("core/renderer.zig").Renderer;
+pub const AppInitError = @import("core/app.zig").AppInitError;
+pub const AppCreateInfo = @import("core/app.zig").AppCreateInfo;
+pub const AppLoopCallback = @import("core/app.zig").AppLoopCallback;
+pub const App = @import("core/app.zig").App;
