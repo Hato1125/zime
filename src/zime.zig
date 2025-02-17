@@ -31,3 +31,5 @@ pub const SpriteCreateError = @import("graphics/sprite.zig").SpriteCreateError;
 pub const SpriteCreateInfo = @import("graphics/sprite.zig").SpriteCreateInfo;
 pub const SpriteCreateFromImageInfo = @import("graphics/sprite.zig").SpriteCreateFromImageInfo;
 pub const Sprite = @import("graphics/sprite.zig").Sprite;
+
+pub const shape = @import("graphics/shape.zig");

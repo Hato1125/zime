@@ -21,5 +21,6 @@ pub fn build(b: *std.Build) void {
     example.linkLibC();
     example.linkSystemLibrary("SDL3");
     example.linkSystemLibrary("SDL3_image");
+    example.linkSystemLibrary("SDL3_gfx");
     b.installArtifact(example);
 }
