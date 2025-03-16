@@ -3,6 +3,9 @@ pub const Size = @import("type/size.zig").Size;
 pub const Rect = @import("type/rect.zig").Rect;
 pub const RGBColor = @import("type/color.zig").RGBColor;
 pub const RGBAColor = @import("type/color.zig").RGBAColor;
+pub const Horizontal = @import("type/direction.zig").Horizontal;
+pub const Vertical = @import("type/direction.zig").Vertical;
+pub const Direction = @import("type/direction.zig").Direction;
 
 pub const ImageLoadError = @import("core/image.zig").ImageLoadError;
 pub const ImageSaveError = @import("core/image.zig").ImageSaveError;
@@ -18,7 +21,15 @@ pub const RenderBackend = @import("core/renderer.zig").RenderBackend;
 pub const RendererCreateError = @import("core/renderer.zig").RendererCreateError;
 pub const RendererCreateInfo = @import("core/renderer.zig").RendererCreateInfo;
 pub const Renderer = @import("core/renderer.zig").Renderer;
+
 pub const AppInitError = @import("core/app.zig").AppInitError;
 pub const AppCreateInfo = @import("core/app.zig").AppCreateInfo;
 pub const AppLoopCallback = @import("core/app.zig").AppLoopCallback;
 pub const App = @import("core/app.zig").App;
+
+pub const SpriteCreateError = @import("graphics/sprite.zig").SpriteCreateError;
+pub const SpriteCreateInfo = @import("graphics/sprite.zig").SpriteCreateInfo;
+pub const SpriteCreateFromImageInfo = @import("graphics/sprite.zig").SpriteCreateFromImageInfo;
+pub const Sprite = @import("graphics/sprite.zig").Sprite;
+
+pub const shape = @import("graphics/shape.zig");
