@@ -4,20 +4,20 @@ const builtin = @import("builtin");
 const sdl = @import("../sdl.zig");
 const zime = @import("../zime.zig");
 
-pub const BlendMode = enum(u32) {
-    none = @intCast(sdl.SDL_BLENDMODE_NONE),
-    blend = @intCast(sdl.SDL_BLENDMODE_BLEND),
-    pma_blend = @intCast(sdl.SDL_BLENDMODE_BLEND_PREMULTIPLIED),
-    add = @intCast(sdl.SDL_BLENDMODE_ADD),
-    pma_add = @intCast(sdl.SDL_BLENDMODE_ADD_PREMULTIPLIED),
-    mod = @intCast(sdl.SDL_BLENDMODE_MOD),
-    mul = @intCast(sdl.SDL_BLENDMODE_MUL),
-    invalid = @intCast(sdl.SDL_BLENDMODE_INVALID),
+pub const BlendMode = enum(c_uint) {
+    none = sdl.SDL_BLENDMODE_NONE,
+    blend = sdl.SDL_BLENDMODE_BLEND,
+    pma_blend = sdl.SDL_BLENDMODE_BLEND_PREMULTIPLIED,
+    add = sdl.SDL_BLENDMODE_ADD,
+    pma_add = sdl.SDL_BLENDMODE_ADD_PREMULTIPLIED,
+    mod = sdl.SDL_BLENDMODE_MOD,
+    mul = sdl.SDL_BLENDMODE_MUL,
+    invalid = sdl.SDL_BLENDMODE_INVALID,
 };
 
-pub const ScaleMode = enum(i32) {
-    nearest = @intCast(sdl.SDL_SCALEMODE_NEAREST),
-    linear = @intCast(sdl.SDL_SCALEMODE_LINEAR),
+pub const ScaleMode = enum(c_int) {
+    nearest = sdl.SDL_SCALEMODE_NEAREST,
+    linear = sdl.SDL_SCALEMODE_LINEAR,
 };
 
 pub const RenderBackend = enum {
