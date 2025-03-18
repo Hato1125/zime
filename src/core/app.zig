@@ -1,11 +1,7 @@
 const std = @import("std");
 
+const sdl = @import("../sdl.zig");
 const zime = @import("../zime.zig");
-
-const c = @cImport({
-    @cInclude("SDL3/SDL_init.h");
-    @cInclude("SDL3/SDL_main.h");
-});
 
 pub const AppInitError = error{
     VideoInitFailure,
@@ -43,7 +39,7 @@ pub const App = struct {
     },
 
     pub fn init(info: AppCreateInfo) (AppInitError || zime.WindowCreateError || zime.RendererCreateError)!App {
-        c.SDL_SetMainReady();
+        sdl.SDL_SetMainReady();
 
         const Subsystem = struct {
             kind: u32,
@@ -51,18 +47,18 @@ pub const App = struct {
         };
 
         const subsystems = [_]Subsystem{
-            .{ .kind = c.SDL_INIT_VIDEO, .err = AppInitError.VideoInitFailure },
-            .{ .kind = c.SDL_INIT_AUDIO, .err = AppInitError.AudioInitFailure },
-            .{ .kind = c.SDL_INIT_EVENTS, .err = AppInitError.EventsInitFailure },
-            .{ .kind = c.SDL_INIT_GAMEPAD, .err = AppInitError.GamepadInitFailure },
+            .{ .kind = sdl.SDL_INIT_VIDEO, .err = AppInitError.VideoInitFailure },
+            .{ .kind = sdl.SDL_INIT_AUDIO, .err = AppInitError.AudioInitFailure },
+            .{ .kind = sdl.SDL_INIT_EVENTS, .err = AppInitError.EventsInitFailure },
+            .{ .kind = sdl.SDL_INIT_GAMEPAD, .err = AppInitError.GamepadInitFailure },
         };
 
         for (subsystems) |subsystem| {
-            if (c.SDL_WasInit(subsystem.kind) == 0) {
-                if (!c.SDL_InitSubSystem(subsystem.kind)) {
+            if (sdl.SDL_WasInit(subsystem.kind) == 0) {
+                if (!sdl.SDL_InitSubSystem(subsystem.kind)) {
                     return subsystem.err;
                 }
-                errdefer c.SDL_QuitSubSystem(subsystem.kind);
+                errdefer sdl.SDL_QuitSubSystem(subsystem.kind);
             }
         }
 
@@ -95,11 +91,11 @@ pub const App = struct {
         self.renderer.destroy();
         self.window.destroy();
 
-        c.SDL_Quit();
+        sdl.SDL_Quit();
     }
 
     pub fn loop(self: App, callback: AppLoopCallback) void {
-        var event_queue: c.SDL_Event = undefined;
+        var event_queue: sdl.SDL_Event = undefined;
 
         var next_time = std.time.nanoTimestamp() + self.calcFrameNanosecond();
 
@@ -108,8 +104,8 @@ pub const App = struct {
                 begin();
             }
 
-            while (c.SDL_PollEvent(&event_queue)) {
-                if (event_queue.type == c.SDL_EVENT_QUIT) {
+            while (sdl.SDL_PollEvent(&event_queue)) {
+                if (event_queue.type == sdl.SDL_EVENT_QUIT) {
                     return;
                 }
             }

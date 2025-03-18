@@ -1,10 +1,7 @@
 const std = @import("std");
 
+const sdl = @import("../sdl.zig");
 const zime = @import("../zime.zig");
-
-const c = @cImport({
-    @cInclude("SDL3/SDL_render.h");
-});
 
 pub const SpriteCreateError = error{
     InvalidRenderer,
@@ -24,8 +21,8 @@ pub const SpriteCreateFromImageInfo = struct {
 };
 
 pub const Sprite = struct {
-    ptr: ?*c.SDL_Texture,
-    renderer: ?*c.SDL_Renderer,
+    ptr: ?*sdl.SDL_Texture,
+    renderer: ?*sdl.SDL_Renderer,
     rotate: f64,
     flip: zime.Point(bool),
     scale: zime.Point(f32),
@@ -37,10 +34,10 @@ pub const Sprite = struct {
             return SpriteCreateError.InvalidRenderer;
         }
 
-        const texture = c.SDL_CreateTexture(
+        const texture = sdl.SDL_CreateTexture(
             @ptrCast(createInfo.renderer.ptr),
-            c.SDL_PIXELFORMAT_RGBA8888,
-            c.SDL_TEXTUREACCESS_TARGET,
+            sdl.SDL_PIXELFORMAT_RGBA8888,
+            sdl.SDL_TEXTUREACCESS_TARGET,
             createInfo.width,
             createInfo.height
         );
@@ -75,7 +72,7 @@ pub const Sprite = struct {
             return SpriteCreateError.InvalidImage;
         }
 
-        const texture = c.SDL_CreateTextureFromSurface(
+        const texture = sdl.SDL_CreateTextureFromSurface(
             @ptrCast(createInfo.renderer.ptr),
             @ptrCast(createInfo.image.ptr)
         );
@@ -103,7 +100,7 @@ pub const Sprite = struct {
 
     pub fn destroy(self: *Sprite) void {
         if (self.ptr) |ptr| {
-            c.SDL_DestroyTexture(ptr);
+            sdl.SDL_DestroyTexture(ptr);
             self.ptr = null;
             self.renderer = null;
         }
@@ -112,14 +109,14 @@ pub const Sprite = struct {
     pub fn renderClip(self: Sprite, pos: zime.Point(f32), clip: zime.Rect(i32)) void {
         if (self.ptr) |ptr| {
             if (self.renderer) |renderer| {
-                const src_rect = c.SDL_FRect {
+                const src_rect = sdl.SDL_FRect {
                     .x = @floatFromInt(clip.x),
                     .y = @floatFromInt(clip.y),
                     .w = @floatFromInt(clip.width),
                     .h = @floatFromInt(clip.height),
                 };
 
-                var dst_rect = c.SDL_FRect {
+                var dst_rect = sdl.SDL_FRect {
                     .x = pos.x,
                     .y = pos.y,
                     .w = src_rect.w * self.scale.x,
@@ -129,15 +126,15 @@ pub const Sprite = struct {
                 dst_rect.x -= calcHorizontalOrigin(self.render_origin.x, dst_rect.w);
                 dst_rect.y -= calcVerticalOrigin(self.render_origin.y, dst_rect.h);
 
-                const rotate_origin = c.SDL_FPoint {
+                const rotate_origin = sdl.SDL_FPoint {
                     .x = calcHorizontalOrigin(self.rotate_origin.x, dst_rect.w),
                     .y = calcVerticalOrigin(self.rotate_origin.y, dst_rect.h),
                 };
 
-                const flip = @intFromBool(self.flip.x) * c.SDL_FLIP_HORIZONTAL
-                    | @intFromBool(self.flip.y) * c.SDL_FLIP_VERTICAL;
+                const flip = @intFromBool(self.flip.x) * sdl.SDL_FLIP_HORIZONTAL
+                    | @intFromBool(self.flip.y) * sdl.SDL_FLIP_VERTICAL;
 
-                _ = c.SDL_RenderTextureRotated(
+                _ = sdl.SDL_RenderTextureRotated(
                     renderer,
                     ptr,
                     &src_rect,
@@ -163,14 +160,14 @@ pub const Sprite = struct {
 
     pub fn setOpacity(self: Sprite, opacity: u8) void {
         if (self.ptr) |ptr| {
-            _ = c.SDL_SetTextureAlphaMod(ptr, opacity);
+            _ = sdl.SDL_SetTextureAlphaMod(ptr, opacity);
         }
     }
 
     pub fn getOpacity(self: Sprite) u8 {
         if (self.ptr) |ptr| {
             var opacity: u8 = 0;
-            _ = c.SDL_SetTextureAlphaMod(ptr, &opacity);
+            _ = sdl.SDL_SetTextureAlphaMod(ptr, &opacity);
 
             return opacity;
         }
@@ -179,7 +176,7 @@ pub const Sprite = struct {
 
     pub fn setColor(self: Sprite, color: zime.RGBColor) void {
         if (self.ptr) |ptr| {
-            _ = c.SDL_SetTextureColorMod(ptr, color.r, color.g, color.b);
+            _ = sdl.SDL_SetTextureColorMod(ptr, color.r, color.g, color.b);
         }
     }
 
@@ -188,7 +185,7 @@ pub const Sprite = struct {
             var r = 0;
             var g = 0;
             var b = 0;
-            _ = c.SDL_GetTextureColorMod(ptr, &r, &g, &b);
+            _ = sdl.SDL_GetTextureColorMod(ptr, &r, &g, &b);
 
             return .{ .r = r, .g = g, .b = b };
         }
@@ -197,14 +194,14 @@ pub const Sprite = struct {
 
     pub fn setBlendMode(self: Sprite, mode: zime.BlendMode) void {
         if (self.ptr) |ptr| {
-            _ = c.SDL_SetTextureBlendMode(ptr, @intFromEnum(mode));
+            _ = sdl.SDL_SetTextureBlendMode(ptr, @intFromEnum(mode));
         }
     }
 
     pub fn getBlendMode(self: Sprite) zime.BlendMode {
         if (self.ptr) |ptr| {
-            var mode: c.SDL_BlendMode = undefined;
-            _ = c.SDL_GetTextureBlendMode(ptr, &mode);
+            var mode: sdl.SDL_BlendMode = undefined;
+            _ = sdl.SDL_GetTextureBlendMode(ptr, &mode);
 
             return @enumFromInt(mode);
         }
@@ -213,14 +210,14 @@ pub const Sprite = struct {
 
     pub fn setScaleMode(self: Sprite, mode: zime.BlendMode) void {
         if (self.ptr) |ptr| {
-            _ = c.SDL_SetTextureScaleMode(ptr, @intFromEnum(mode));
+            _ = sdl.SDL_SetTextureScaleMode(ptr, @intFromEnum(mode));
         }
     }
 
     pub fn getScaleMode(self: Sprite) zime.BlendMode {
         if (self.ptr) |ptr| {
-            var mode: c.SDL_ScaleMode = undefined;
-            _ = c.SDL_GetTextureScaleMode(ptr, &mode);
+            var mode: sdl.SDL_ScaleMode = undefined;
+            _ = sdl.SDL_GetTextureScaleMode(ptr, &mode);
 
             return @enumFromInt(mode);
         }
@@ -231,7 +228,7 @@ pub const Sprite = struct {
         if (self.ptr) |ptr| {
             var width: f32 = 0.0;
             var height: f32 = 0.0;
-            _ = c.SDL_GetTextureSize(ptr, &width, &height);
+            _ = sdl.SDL_GetTextureSize(ptr, &width, &height);
 
             return .{
                 .width = @intFromFloat(width),
